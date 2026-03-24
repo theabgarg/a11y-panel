@@ -1,0 +1,62 @@
+{
+  "name": "a11y-panel",
+  "version": "1.0.0",
+  "description": "An modern draggable React Accessibility Widget that allows users to change sites visual changes",
+  "author": "abhishek garg",
+  "private": false,
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "accessibility",
+    "a11y",
+    "widget",
+    "ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theabgarg/a11y-panel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/theabgarg/a11y-panel/issues"
+  },
+  "homepage": "https://github.com/theabgarg/a11y-panel#readme",
+  "type": "module",
+  "main": "dist/a11y-panel.umd.cjs",
+  "module": "dist/a11y-panel.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/a11y-panel.es.js",
+      "require": "./dist/a11y-panel.umd.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "react": ">=16.8 <20",
+    "react-dom": ">=16.8 <20",
+    "styled-components": ">=5.0.0"
+  },
+  "dependencies": {
+    "react-dropdown": "^1.9.2",
+    "react-switch": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.2.0",
+    "vite-plugin-dts": "^3.8.1"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  }
+}
