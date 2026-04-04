@@ -1,23 +1,23 @@
-import React, { useContext } from 'react';
-import { store } from '../Context/Store';
-import SettingsBox from './SettingsBox';
-import Counter from './Counter';
+import React, { useContext } from "react";
+import { store } from "../Context/Store";
+import SettingsBox from "./SettingsBox";
+import Counter from "./Counter";
 
 export default function FontSize() {
   const { globalState, dispatch } = useContext(store);
 
   return (
-    <SettingsBox title={'Font Size'}>
+    <SettingsBox title={"Font Size"}>
       <Counter
         onMinusChange={
-          globalState.fontSizeAdjustment >= -100
-            ? () => dispatch({ type: 'MINUS_FONT_SIZE' })
-            : () => {} // do nothing
+          globalState.fontSizeAdjustment > -100
+            ? () => dispatch({ type: "MINUS_FONT_SIZE" })
+            : () => undefined
         }
         onAddChange={
-          globalState.fontSizeAdjustment <= 100
-            ? () => dispatch({ type: 'ADD_FONT_SIZE' })
-            : () => {} // do nothing
+          globalState.fontSizeAdjustment < 100
+            ? () => dispatch({ type: "ADD_FONT_SIZE" })
+            : () => undefined
         }
         value={globalState.fontSizeAdjustment}
         minValue={-100}

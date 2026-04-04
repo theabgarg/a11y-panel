@@ -6,12 +6,18 @@ A customizable embedded widget that allows users to adjust the visual appearance
 
 ## Features
 
-- **Font Styling**: Adjust font size, color, family, and case.
+- **Font Styling**: Adjust font size, color, emphasis, and text case.
 - **Layout Adjustments**: Modify line height, letter spacing, and text alignment.
 - **Visual Assistance**: Highlight links and titles, or hide non-essential images.
 - **Contrast Modes**: Toggle high contrast, low contrast, or monochrome themes.
+- **Modern UI**: Use a responsive, draggable floating panel with grouped tabs for typography, colors, and display controls.
+- **Persistent Settings**: Save user preferences across reloads with configurable `localStorage` support.
 
 ## Installation
+
+```bash
+bun add a11y-panel styled-components
+```
 
 ```bash
 npm install a11y-panel styled-components
@@ -106,6 +112,7 @@ export default function App() {
 | `theme`           | `WidgetTheme`              | A partial theme object to override the widget's default colors.   |
 | `initialPosition` | `{ x: number; y: number }` | The starting coordinates for the draggable widget trigger.        |
 | `customIcon`      | `React.ReactNode`          | A custom React element to replace the default accessibility icon. |
+| `storageKey`      | `string`                   | Optional custom `localStorage` key for persisting user settings.  |
 
 ## Use Cases
 
