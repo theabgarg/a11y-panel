@@ -1,12 +1,11 @@
-import React, { useContext, useState, useRef } from 'react';
-import AccessibilityIcon from './assets/AccessibilityIcon';
-import CloseIcon from './assets/CloseIcon';
-import Header from './Header';
-import StyleSettings from './StyleSettings';
-import Footer from './Footer';
-import './Widget.css';
-import { store } from './Context/Store';
-import styled from 'styled-components';
+import React, { useContext, useRef, useState } from "react";
+import AccessibilityIcon from "./assets/AccessibilityIcon";
+import Header from "./Header";
+import StyleSettings from "./StyleSettings";
+import Footer from "./Footer";
+import "./Widget.css";
+import { store } from "./Context/Store";
+import styled, { keyframes } from "styled-components";
 
 interface WidgetProps {
   initialPosition?: { x: number; y: number };
@@ -15,104 +14,141 @@ interface WidgetProps {
 
 export default function Widget({ initialPosition, customIcon }: WidgetProps) {
   const { globalState, dispatch } = useContext(store);
-
-  const [position, setPosition] = useState<{ x: number; y: number } | null>(initialPosition || null);
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(
+    initialPosition || null,
+  );
   const [isDragging, setIsDragging] = useState(false);
-  const dragRef = useRef({ startX: 0, startY: 0, initialX: 0, initialY: 0, dragged: false });
+  const dragRef = useRef({
+    startX: 0,
+    startY: 0,
+    initialX: 0,
+    initialY: 0,
+    dragged: false,
+  });
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    const target = e.currentTarget as HTMLElement;
+  const handlePointerDown = (event: React.PointerEvent<HTMLButtonElement>) => {
+    const target = event.currentTarget;
     const rect = target.getBoundingClientRect();
-    
-    const startX = position ? position.x : rect.left;
-    const startY = position ? position.y : rect.top;
 
     dragRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      initialX: startX,
-      initialY: startY,
+      startX: event.clientX,
+      startY: event.clientY,
+      initialX: position ? position.x : rect.left,
+      initialY: position ? position.y : rect.top,
       dragged: false,
     };
-    
-    target.setPointerCapture(e.pointerId);
+
+    target.setPointerCapture(event.pointerId);
     setIsDragging(true);
   };
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
-    
-    const dx = e.clientX - dragRef.current.startX;
-    const dy = e.clientY - dragRef.current.startY;
-    
+  const handlePointerMove = (event: React.PointerEvent<HTMLButtonElement>) => {
+    if (!isDragging) {
+      return;
+    }
+
+    const dx = event.clientX - dragRef.current.startX;
+    const dy = event.clientY - dragRef.current.startY;
+
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
       dragRef.current.dragged = true;
     }
-    
-    const newX = Math.min(Math.max(0, dragRef.current.initialX + dx), window.innerWidth - 65);
-    const newY = Math.min(Math.max(0, dragRef.current.initialY + dy), window.innerHeight - 65);
-    
+
+    const newX = Math.min(
+      Math.max(0, dragRef.current.initialX + dx),
+      window.innerWidth - 72,
+    );
+    const newY = Math.min(
+      Math.max(0, dragRef.current.initialY + dy),
+      window.innerHeight - 72,
+    );
+
     setPosition({ x: newX, y: newY });
   };
 
-  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+  const handlePointerUp = (event: React.PointerEvent<HTMLButtonElement>) => {
     setIsDragging(false);
-    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+    event.currentTarget.releasePointerCapture(event.pointerId);
   };
 
   const getPopupStyle = (): React.CSSProperties => {
-    if (!position) return {};
+    if (!position) {
+      return {};
+    }
 
     const { innerWidth, innerHeight } = window;
-    const style: React.CSSProperties = { position: 'fixed' };
+    const style: React.CSSProperties = { position: "fixed" };
 
     if (position.x < innerWidth / 2) {
-      style.left = `${Math.max(10, position.x)}px`;
-      style.right = 'auto';
+      style.left = `${Math.max(12, position.x)}px`;
+      style.right = "auto";
     } else {
-      style.right = `${Math.max(10, innerWidth - position.x - 65)}px`;
-      style.left = 'auto';
+      style.right = `${Math.max(12, innerWidth - position.x - 72)}px`;
+      style.left = "auto";
     }
 
     if (position.y < innerHeight / 2) {
-      style.top = `${position.y + 75}px`;
-      style.bottom = 'auto';
+      style.top = `${position.y + 78}px`;
+      style.bottom = "auto";
     } else {
-      style.bottom = `${innerHeight - position.y + 10}px`;
-      style.top = 'auto';
+      style.bottom = `${innerHeight - position.y + 12}px`;
+      style.top = "auto";
     }
 
     return style;
   };
 
-  const buttonStyle: React.CSSProperties = position 
-    ? { left: position.x, top: position.y, bottom: 'auto', right: 'auto', touchAction: 'none' } 
-    : { touchAction: 'none' };
+  const buttonStyle: React.CSSProperties = position
+    ? {
+        left: position.x,
+        top: position.y,
+        bottom: "auto",
+        right: "auto",
+        touchAction: "none",
+      }
+    : { touchAction: "none" };
 
   return (
-    <Container>
+    <Container className="a11y-widget">
       <InnerContainer>
-        <Button 
+        {globalState.widgetOpen && (
+          <Backdrop
+            className="a11y-widget-backdrop"
+            onClick={() => dispatch({ type: "CLOSE_WIDGET" })}
+          />
+        )}
+
+        <Button
+          type="button"
+          className="a11y-widget-trigger"
+          aria-label="Open accessibility settings"
+          title="Accessibility settings"
           style={buttonStyle}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
           onClick={() => {
             if (!dragRef.current.dragged) {
-              dispatch({ type: 'OPEN_WIDGET' });
+              dispatch({ type: "OPEN_WIDGET" });
             }
           }}
         >
-          {customIcon ? customIcon : <AccessibilityIcon />}
+          <IconWrapper>
+            {customIcon ? customIcon : <AccessibilityIcon />}
+          </IconWrapper>
         </Button>
+
         {globalState.widgetOpen && (
-          <WidgetContainer style={getPopupStyle()}>
-            <CloseButton onClick={() => dispatch({ type: 'CLOSE_WIDGET' })} />
-            <Header />
+          <WidgetContainer
+            className="a11y-widget-panel"
+            style={getPopupStyle()}
+          >
+            <Header onClose={() => dispatch({ type: "CLOSE_WIDGET" })} />
             <WidgetBox>
               <StyleSettings />
             </WidgetBox>
-            <Footer />
+            <Footer onClose={() => dispatch({ type: "CLOSE_WIDGET" })} />
           </WidgetContainer>
         )}
       </InnerContainer>
@@ -120,77 +156,165 @@ export default function Widget({ initialPosition, customIcon }: WidgetProps) {
   );
 }
 
+const backdropFade = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const panelEnter = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+`;
+
+const pulseRing = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+`;
+
 const Container = styled.div`
-  font-family: 'Roboto', sans-serif;
+  position: relative;
+  font-family: "Roboto", sans-serif;
 `;
 
 const InnerContainer = styled.div`
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 `;
 
-const Button = styled.div`
+const Backdrop = styled.div`
   position: fixed;
-  bottom: 10px;
-  right: 10px;
-  background-color: ${({ theme }) => theme.primary};
-  color: ${({ theme }) => theme.iconColor || theme.text};
-  padding: 10px;
-  border-radius: 500px;
-  border: solid 2px ${({ theme }) => theme.iconColor || theme.text};
-  z-index: 9998;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(4px);
+  animation: ${backdropFade} 0.18s ease-out;
+  z-index: 9997;
+`;
+
+const Button = styled.button`
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 2px solid ${({ theme }) => theme.iconColor || "#ffffff"};
+  background: ${({ theme }) => theme.primary};
+  color: ${({ theme }) => theme.iconColor || "#ffffff"};
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.26);
   cursor: grab;
+  z-index: 9998;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+  appearance: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: inherit;
+    border: 2px solid rgba(14, 94, 177, 0.25);
+    animation: ${pulseRing} 2.3s ease-out infinite;
+  }
+
+  &:hover {
+    transform: translateY(-1px) scale(1.04);
+    box-shadow: 0 18px 36px rgba(15, 23, 42, 0.3);
+  }
+
   &:active {
     cursor: grabbing;
+    transform: scale(0.98);
   }
-  img {
-    max-width: 60px;
+
+  &:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.9);
+    outline-offset: 3px;
+  }
+`;
+
+const IconWrapper = styled.span`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  svg {
+    width: 24px;
+    height: 24px;
   }
 `;
 
 const WidgetContainer = styled.div`
   position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: calc(100% - 25px);
-  max-height: 450px;
-  max-width: 380px;
-  min-height: 300px;
+  right: 12px;
+  bottom: 12px;
+  width: min(380px, calc(100vw - 24px));
   min-width: 280px;
-  z-index: 9999;
+  max-height: min(560px, calc(100vh - 24px));
+  display: flex;
+  flex-direction: column;
+  background: ${({ theme }) => theme.background};
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 20px;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.2);
   overflow: hidden;
-  border-radius: 10px;
-`;
+  animation: ${panelEnter} 0.2s ease-out;
+  z-index: 9999;
 
-const CloseButton = styled(CloseIcon)`
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  background-color: ${({ theme }) => theme.background};
-  color: ${({ theme }) => theme.primary};
-  border-radius: 100px;
-  height: 30px;
-  width: 30px;
-  /* transform: translate(-50%, -50%); */
+  @media (max-width: 600px) {
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 10px !important;
+    top: auto !important;
+    width: auto;
+    min-width: 0;
+    max-height: calc(100vh - 20px);
+    border-radius: 20px 20px 16px 16px;
+  }
 `;
 
 const WidgetBox = styled.div`
-  background-color: ${({ theme }) => theme.widgetBackground};
-  width: 100%;
-  height: 420px;
-  overflow-y: scroll;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
   overflow-x: hidden;
+  background: ${({ theme }) => theme.widgetBackground};
   color: ${({ theme }) => theme.text};
-  ::-webkit-scrollbar {
-    width: 10px;
+
+  &::-webkit-scrollbar {
+    width: 8px;
   }
-  ::-webkit-scrollbar-track {
-    background: #2b2a2a;
-    border-radius: 0px 10px 10px 0px;
+
+  &::-webkit-scrollbar-track {
+    background: #eef2f7;
   }
-  ::-webkit-scrollbar-thumb {
-    background: #888;
+
+  &::-webkit-scrollbar-thumb {
+    background: #c7d2de;
+    border-radius: 999px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
   }
 `;

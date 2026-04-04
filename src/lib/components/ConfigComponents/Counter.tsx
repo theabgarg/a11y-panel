@@ -1,9 +1,7 @@
-import React, { useContext } from 'react';
-import { store } from '../Context/Store';
-import styled from 'styled-components';
-import MinusIcon from '../assets/MinusIcon';
-import PlusIcon from '../assets/PlusIcon';
-import SettingsBox from './SettingsBox';
+import React from "react";
+import styled from "styled-components";
+import MinusIcon from "../assets/MinusIcon";
+import PlusIcon from "../assets/PlusIcon";
 
 interface CounterProps {
   onMinusChange: () => void;
@@ -20,59 +18,82 @@ export default function Counter({
   minValue,
   maxValue,
 }: CounterProps) {
-  const buttonInActiveStyles = {
-    opacity: '0.5',
-    color: 'red',
-  };
+  const isMin = value <= minValue;
+  const isMax = value >= maxValue;
+  const formattedValue = `${value > 0 ? `+${value}` : value}%`;
+
   return (
     <CounterContainer>
-      <MinusButton
+      <IconButton
+        type="button"
         onClick={onMinusChange}
-        style={value >= minValue ? {} : buttonInActiveStyles}
+        disabled={isMin}
+        aria-label="Decrease value"
       >
         <MinusIcon />
-      </MinusButton>
-      <SizeContainer>{value}%</SizeContainer>
-      <PlusButton
-        style={value <= maxValue ? {} : buttonInActiveStyles}
+      </IconButton>
+      <SizeContainer $active={value !== 0}>{formattedValue}</SizeContainer>
+      <IconButton
+        type="button"
         onClick={onAddChange}
+        disabled={isMax}
+        aria-label="Increase value"
       >
         <PlusIcon />
-      </PlusButton>
+      </IconButton>
     </CounterContainer>
   );
 }
 
 const CounterContainer = styled.div`
-  border-radius: 50px;
-  background: grey;
-  display: flex;
-  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 14px;
+  background: #eef4ef;
+`;
+
+const IconButton = styled.button`
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0px 8px;
-`;
-const MinusButton = styled.div`
-  :hover {
-    color: ${({ theme }) => theme.primary};
+  border: none;
+  border-radius: 8px;
+  background: #ffffff;
+  color: ${({ theme }) => theme.primary};
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.iconColor || "#ffffff"};
   }
-`;
-const PlusButton = styled.div`
-  :hover {
-    color: ${({ theme }) => theme.primary};
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
   }
 `;
 
-const SizeContainer = styled.div`
-  padding: 0.5rem;
-  background-color: ${({ theme }) => theme.primary};
-  border-radius: 100px;
-  box-shadow: 2px 2px 6px black;
-  margin: 0rem 0.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.text};
-  font-size: 12px;
-  width: 25px;
+const SizeContainer = styled.span<{ $active: boolean }>`
+  min-width: 54px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: ${({ $active, theme }) => ($active ? theme.primary : "#64748b")};
+  background: ${({ $active }) => ($active ? "#e8f2ff" : "#ffffff")};
 `;
