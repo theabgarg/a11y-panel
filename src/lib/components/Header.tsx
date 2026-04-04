@@ -16,7 +16,7 @@ export default function Header({ onClose }: HeaderProps) {
             <AccessibilityIcon />
           </IconCircle>
           <TextBlock>
-            <Title>Accessibility</Title>
+            <Title id="a11y-widget-title">Accessibility</Title>
             <Subtitle>Customize your reading experience</Subtitle>
           </TextBlock>
         </Info>

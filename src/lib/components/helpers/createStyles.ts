@@ -54,7 +54,7 @@ export default function createStyles(globalState: GlobalState) {
         ? "contrast(0.75)"
         : "";
 
-  const fontScale = fontSizeAdjustment ? 1 + fontSizeAdjustment / 100 : 0;
+  const fontScale = Math.max(0.1, 1 + fontSizeAdjustment / 100);
   const contentLineHeight = lineHeight ? 1.5 + lineHeight / 100 : 0;
   const headingLineHeight = lineHeight ? 1.3 + lineHeight / 100 : 0;
   const spacingAmount = letterSpacing ? `${letterSpacing / 20}px` : "";
@@ -88,13 +88,13 @@ export default function createStyles(globalState: GlobalState) {
       }
       ${titleColor ? `color: ${titleColor} !important;` : ""}
       ${titleBackgroundColor ? `background-color: ${titleBackgroundColor} !important; padding: 4px 8px !important; border-radius: 6px !important;` : ""}
-      ${fontScale ? `font-size: calc(1em * ${fontScale}) !important;` : ""}
+      ${fontSizeAdjustment !== 0 ? `font-size: calc(1em * ${fontScale}) !important;` : ""}
       ${headingLineHeight ? `line-height: ${headingLineHeight} !important;` : ""}
       ${spacingAmount ? `letter-spacing: ${spacingAmount} !important;` : ""}
     }
 
     ${contentSelectors} {
-      ${fontScale ? `font-size: calc(1em * ${fontScale}) !important;` : ""}
+      ${fontSizeAdjustment !== 0 ? `font-size: calc(1em * ${fontScale}) !important;` : ""}
       ${contentLineHeight ? `line-height: ${contentLineHeight} !important;` : ""}
       ${spacingAmount ? `letter-spacing: ${spacingAmount} !important;` : ""}
     }

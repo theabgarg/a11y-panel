@@ -25,12 +25,16 @@ export default function StyleSettings() {
 
   return (
     <Container>
-      <TabBar>
+      <TabBar role="tablist">
         {tabs.map((tab) => (
           <TabButton
             key={tab}
+            id={`a11y-tab-${tab.toLowerCase()}`}
+            role="tab"
             type="button"
             $active={activeTab === tab}
+            aria-selected={activeTab === tab}
+            aria-controls={`a11y-tabpanel-${tab.toLowerCase()}`}
             onClick={() => setActiveTab(tab)}
           >
             {tab}
@@ -38,7 +42,11 @@ export default function StyleSettings() {
         ))}
       </TabBar>
 
-      <TabPanel>
+      <TabPanel
+        id={`a11y-tabpanel-${activeTab.toLowerCase()}`}
+        role="tabpanel"
+        aria-labelledby={`a11y-tab-${activeTab.toLowerCase()}`}
+      >
         {activeTab === "Typography" && (
           <>
             <SectionTitle>Type & emphasis</SectionTitle>

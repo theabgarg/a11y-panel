@@ -122,6 +122,9 @@ export default function Widget({ initialPosition, customIcon }: WidgetProps) {
           type="button"
           className="a11y-widget-trigger"
           aria-label="Open accessibility settings"
+          aria-expanded={globalState.widgetOpen}
+          aria-haspopup="dialog"
+          aria-controls="a11y-widget-panel"
           title="Accessibility settings"
           style={buttonStyle}
           onPointerDown={handlePointerDown}
@@ -141,6 +144,10 @@ export default function Widget({ initialPosition, customIcon }: WidgetProps) {
 
         {globalState.widgetOpen && (
           <WidgetContainer
+            id="a11y-widget-panel"
+            role="dialog"
+            aria-modal
+            aria-labelledby="a11y-widget-title"
             className="a11y-widget-panel"
             style={getPopupStyle()}
           >

@@ -3,7 +3,7 @@ import React, {
   createContext,
   useReducer,
   useEffect,
-  useState,
+  useRef,
   ReactNode,
   Dispatch,
 } from "react";
@@ -35,13 +35,13 @@ function getPersistedState(storageKey: string): Partial<GlobalState> {
     return {};
   }
 
-  const rawState = window.localStorage.getItem(storageKey);
-
-  if (!rawState) {
-    return {};
-  }
-
   try {
+    const rawState = window.localStorage.getItem(storageKey);
+
+    if (!rawState) {
+      return {};
+    }
+
     return JSON.parse(rawState) as Partial<GlobalState>;
   } catch {
     return {};
@@ -52,8 +52,17 @@ const ContextProvider = ({
   children,
   storageKey = STORAGE_KEY,
 }: ContextProviderProps) => {
-  const [globalState, dispatch] = useReducer(reducer, initialState);
-  const [isHydrated, setIsHydrated] = useState(false);
+  // Initialize from persisted state via lazy initializer to avoid a race
+  // condition where isHydrated could become true before globalState reflects
+  // the stored preferences.
+  const [globalState, dispatch] = useReducer(reducer, undefined, () => {
+    const persisted = getPersistedState(storageKey);
+    return { ...initialState, ...persisted, widgetOpen: false };
+  });
+
+  // Track the previous storageKey so we can re-hydrate only when it changes
+  // at runtime (the lazy initializer already handles the initial load).
+  const prevStorageKeyRef = useRef(storageKey);
 
   useEffect(() => {
     if (typeof document !== "undefined") {
@@ -69,9 +78,13 @@ const ContextProvider = ({
     }
   }, []);
 
+  // Re-hydrate only when storageKey changes after mount.
   useEffect(() => {
+    if (prevStorageKeyRef.current === storageKey) {
+      return;
+    }
+    prevStorageKeyRef.current = storageKey;
     dispatch({ type: "HYDRATE_STATE", data: getPersistedState(storageKey) });
-    setIsHydrated(true);
   }, [storageKey]);
 
   useEffect(() => {
@@ -84,13 +97,17 @@ const ContextProvider = ({
   }, [globalState]);
 
   useEffect(() => {
-    if (!isHydrated || typeof window === "undefined") {
+    if (typeof window === "undefined") {
       return;
     }
 
     const { widgetOpen, ...persistedState } = globalState;
-    window.localStorage.setItem(storageKey, JSON.stringify(persistedState));
-  }, [globalState, isHydrated, storageKey]);
+    try {
+      window.localStorage.setItem(storageKey, JSON.stringify(persistedState));
+    } catch {
+      // Ignore persistence failures (e.g., quota exceeded or storage disabled).
+    }
+  }, [globalState, storageKey]);
 
   useEffect(() => {
     if (typeof window === "undefined") {
