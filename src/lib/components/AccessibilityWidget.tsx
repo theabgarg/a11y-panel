@@ -2,7 +2,6 @@
 import React from "react";
 import Widget from "./Widget";
 import { ContextProvider } from "./Context/Store";
-import { ThemeProvider } from "styled-components";
 
 export interface WidgetTheme {
   primary?: string;
@@ -17,6 +16,14 @@ export interface AccessibilityWidgetProps {
   initialPosition?: { x: number; y: number };
   customIcon?: React.ReactNode;
   storageKey?: string;
+}
+
+interface WidgetCssVariables extends React.CSSProperties {
+  "--a11y-primary"?: string;
+  "--a11y-background"?: string;
+  "--a11y-widget-background"?: string;
+  "--a11y-text"?: string;
+  "--a11y-icon-color"?: string;
 }
 
 const defaultTheme: Required<WidgetTheme> = {
@@ -35,11 +42,21 @@ export default function AccessibilityWidget({
 }: AccessibilityWidgetProps = {}) {
   const mergedTheme = { ...defaultTheme, ...theme };
 
+  const cssVars: WidgetCssVariables = {
+    "--a11y-primary": mergedTheme.primary,
+    "--a11y-background": mergedTheme.background,
+    "--a11y-widget-background": mergedTheme.widgetBackground,
+    "--a11y-text": mergedTheme.text,
+    "--a11y-icon-color": mergedTheme.iconColor,
+  };
+
   return (
     <ContextProvider storageKey={storageKey}>
-      <ThemeProvider theme={mergedTheme}>
-        <Widget initialPosition={initialPosition} customIcon={customIcon} />
-      </ThemeProvider>
+      <Widget
+        initialPosition={initialPosition}
+        customIcon={customIcon}
+        cssVars={cssVars}
+      />
     </ContextProvider>
   );
 }

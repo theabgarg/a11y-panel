@@ -12,12 +12,11 @@ export default defineConfig({
         format !== "umd" ? `a11y-panel.${format}.js` : `a11y-panel.umd.cjs`,
     },
     rollupOptions: {
-      external: ["react", "react-dom", "styled-components"],
+      external: ["react", "react-dom"],
       output: {
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
-          "styled-components": "styled",
         },
       },
     },

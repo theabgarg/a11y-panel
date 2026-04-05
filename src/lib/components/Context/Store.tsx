@@ -66,13 +66,11 @@ const ContextProvider = ({
 
   useEffect(() => {
     if (typeof document !== "undefined") {
-      const existingStyle = document.getElementById(
-        "react-accessibility-styles",
-      );
+      const existingStyle = document.getElementById("a11y-panel-page-styles");
       if (!existingStyle) {
         document.head.insertAdjacentHTML(
           "beforeend",
-          `<style id="react-accessibility-styles"></style>`,
+          `<style id="a11y-panel-page-styles"></style>`,
         );
       }
     }
@@ -89,9 +87,9 @@ const ContextProvider = ({
 
   useEffect(() => {
     if (typeof document !== "undefined") {
-      const styleEl = document.getElementById("react-accessibility-styles");
+      const styleEl = document.getElementById("a11y-panel-page-styles");
       if (styleEl) {
-        styleEl.innerHTML = createStyles(globalState);
+        styleEl.textContent = createStyles(globalState);
       }
     }
   }, [globalState]);

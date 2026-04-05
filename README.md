@@ -16,18 +16,18 @@ A customizable embedded widget that allows users to adjust the visual appearance
 ## Installation
 
 ```bash
-bun add a11y-panel styled-components
+bun add a11y-panel
 ```
 
 ```bash
-npm install a11y-panel styled-components
+npm install a11y-panel
 ```
 
 ```bash
-yarn add a11y-panel styled-components
+yarn add a11y-panel
 ```
 
-_Note: `styled-components` is required as a peer dependency._
+_No extra styling peer dependency is required._
 
 ## Usage
 
