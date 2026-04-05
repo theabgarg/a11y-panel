@@ -1,16 +1,29 @@
-import React from 'react';
-import Switch, { ReactSwitchProps } from 'react-switch';
+import React from "react";
 
-interface ToggleProps extends ReactSwitchProps {}
+interface ToggleProps {
+  checked: boolean;
+  onChange: () => void;
+  disabled?: boolean;
+  ariaLabel?: string;
+}
 
-export default function Toggle({ onChange, checked, ...rest }: ToggleProps) {
+export default function Toggle({
+  onChange,
+  checked,
+  disabled = false,
+  ariaLabel,
+}: ToggleProps) {
   return (
-    <Switch
-      onChange={onChange}
-      checked={checked}
-      height={25}
-      width={45}
-      {...rest}
-    />
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={ariaLabel}
+      disabled={disabled}
+      className={`a11y-panel-toggle${checked ? " is-on" : ""}`}
+      onClick={onChange}
+    >
+      <span className="a11y-panel-toggle__thumb" />
+    </button>
   );
 }

@@ -1,6 +1,5 @@
-import React, { ReactNode } from 'react';
-import SubSectionTitle from '../TextContent/SubSectionTitle';
-import styled from 'styled-components';
+import React, { ReactNode } from "react";
+import SubSectionTitle from "../TextContent/SubSectionTitle";
 
 interface SettingsBoxProps {
   title: string;
@@ -9,20 +8,9 @@ interface SettingsBoxProps {
 
 export default function SettingsBox({ title, children }: SettingsBoxProps) {
   return (
-    <Container>
+    <div className="a11y-panel-settings-box">
       <SubSectionTitle>{title}</SubSectionTitle>
-      {children}
-    </Container>
+      <div className="a11y-panel-settings-box__content">{children}</div>
+    </div>
   );
 }
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-  background-color: ${({ theme }) => theme.primary};
-  padding: 10px;
-  border-radius: 10px;
-  margin: 0rem 0.5rem 0.5rem 0rem;
-  flex-grow: 1;
-`;

@@ -1,39 +1,31 @@
-import React, { useContext } from 'react';
-import styled from 'styled-components';
-import { store } from './Context/Store';
+import React, { useContext } from "react";
+import { store } from "./Context/Store";
 
-export default function Footer() {
-  const { globalState, dispatch } = useContext(store);
-  return (
-    <Container>
-      <Button
-        onClick={() =>
-          dispatch({
-            type: 'RESET_SETTINGS',
-          })
-        }
-      >
-        Reset Settings
-      </Button>
-    </Container>
-  );
+interface FooterProps {
+  onClose?: () => void;
 }
 
-const Container = styled.div`
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-  background-color: ${({ theme }) => theme.primary};
-  padding: 0.25rem;
-  box-sizing: border-box;
-`;
+export default function Footer({ onClose }: FooterProps) {
+  const { dispatch } = useContext(store);
 
-const Button = styled.button`
-  border-radius: 50px;
-  background-color: ${({ theme }) => theme.widgetBackground};
-  color: ${({ theme }) => theme.text};
-  border: none;
-  padding: 0.5rem 0.75rem;
-  font-size: 13px;
-`;
+  return (
+    <div className="a11y-panel-footer">
+      <button
+        type="button"
+        className="a11y-panel-footer__button a11y-panel-footer__button--secondary"
+        onClick={() => dispatch({ type: "RESET_SETTINGS" })}
+      >
+        Reset
+      </button>
+      {onClose && (
+        <button
+          type="button"
+          className="a11y-panel-footer__button a11y-panel-footer__button--primary"
+          onClick={onClose}
+        >
+          Done
+        </button>
+      )}
+    </div>
+  );
+}

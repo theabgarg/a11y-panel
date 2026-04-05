@@ -1,75 +1,63 @@
-import React, { useContext } from 'react';
-import { store } from '../Context/Store';
-import SettingsBox from './SettingsBox';
-import ColorsSelect from './ColorsSelect';
-import BoldIcon from '../assets/BoldIcon';
-import TextAlignLeftIcon from '../assets/TextAlignLeftIcon';
-import TextAlignCenterIcon from '../assets/TextAlignCenterIcon';
-import TextAlignRightIcon from '../assets/TextAlignRightIcon';
-import ItalicIcon from '../assets/ItalicIcon';
-import styled from 'styled-components';
+import React, { useContext } from "react";
+import { store } from "../Context/Store";
+import SettingsBox from "./SettingsBox";
+import BoldIcon from "../assets/BoldIcon";
+import TextAlignLeftIcon from "../assets/TextAlignLeftIcon";
+import TextAlignCenterIcon from "../assets/TextAlignCenterIcon";
+import TextAlignRightIcon from "../assets/TextAlignRightIcon";
+import ItalicIcon from "../assets/ItalicIcon";
 
-export default function FontColor() {
+export default function FontButtons() {
   const { globalState, dispatch } = useContext(store);
 
   return (
-    <SettingsBox title={'Font Styles'}>
-      <Row>
-        <Button
-          $active={globalState.textBold}
-          onClick={() => dispatch({ type: 'TOGGLE_BOLD' })}
+    <SettingsBox title="Font Style">
+      <div className="a11y-panel-style-row">
+        <button
+          type="button"
+          className={`a11y-panel-style-button${globalState.textBold ? " is-active" : ""}`}
+          onClick={() => dispatch({ type: "TOGGLE_BOLD" })}
+          aria-label="Toggle bold text"
         >
           <BoldIcon />
-        </Button>
-        <Button
-          $active={globalState.textItalic}
-          onClick={() => dispatch({ type: 'TOGGLE_ITALIC' })}
+        </button>
+        <button
+          type="button"
+          className={`a11y-panel-style-button${globalState.textItalic ? " is-active" : ""}`}
+          onClick={() => dispatch({ type: "TOGGLE_ITALIC" })}
+          aria-label="Toggle italic text"
         >
           <ItalicIcon />
-        </Button>
-        <Button
-          $active={globalState.textAlignment === 'left'}
-          onClick={() => dispatch({ type: 'SET_TEXT_ALIGNMENT', data: 'left' })}
+        </button>
+        <button
+          type="button"
+          className={`a11y-panel-style-button${globalState.textAlignment === "left" ? " is-active" : ""}`}
+          onClick={() => dispatch({ type: "SET_TEXT_ALIGNMENT", data: "left" })}
+          aria-label="Align text left"
         >
           <TextAlignLeftIcon />
-        </Button>
-
-        <Button
-          $active={globalState.textAlignment === 'center'}
+        </button>
+        <button
+          type="button"
+          className={`a11y-panel-style-button${globalState.textAlignment === "center" ? " is-active" : ""}`}
           onClick={() =>
-            dispatch({ type: 'SET_TEXT_ALIGNMENT', data: 'center' })
+            dispatch({ type: "SET_TEXT_ALIGNMENT", data: "center" })
           }
+          aria-label="Align text center"
         >
           <TextAlignCenterIcon />
-        </Button>
-
-        <Button
-          $active={globalState.textAlignment === 'right'}
+        </button>
+        <button
+          type="button"
+          className={`a11y-panel-style-button${globalState.textAlignment === "right" ? " is-active" : ""}`}
           onClick={() =>
-            dispatch({ type: 'SET_TEXT_ALIGNMENT', data: 'right' })
+            dispatch({ type: "SET_TEXT_ALIGNMENT", data: "right" })
           }
+          aria-label="Align text right"
         >
           <TextAlignRightIcon />
-        </Button>
-      </Row>
+        </button>
+      </div>
     </SettingsBox>
   );
 }
-
-const Button = styled.button<{ $active?: boolean }>`
-  background: none;
-  box-shadow: none;
-  border: none;
-  color: white;
-  font-size: 22px;
-  background-color: ${(props) => (props.$active ? 'grey' : 'transparent')};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0.25rem 0.25rem 0.25rem;
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
