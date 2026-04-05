@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import HideImages from "./ConfigComponents/HideImages";
 import FontColor from "./ConfigComponents/FontColor";
-import styled from "styled-components";
 import SectionTitle from "./TextContent/SectionTitle";
 import FontSize from "./ConfigComponents/FontSize";
 import LineHeight from "./ConfigComponents/LineHeight";
@@ -24,114 +23,70 @@ export default function StyleSettings() {
   const [activeTab, setActiveTab] = useState<TabKey>("Typography");
 
   return (
-    <Container>
-      <TabBar role="tablist">
+    <div className="a11y-panel-settings">
+      <div className="a11y-panel-tabs" role="tablist">
         {tabs.map((tab) => (
-          <TabButton
+          <button
             key={tab}
             id={`a11y-tab-${tab.toLowerCase()}`}
             role="tab"
             type="button"
-            $active={activeTab === tab}
+            className={`a11y-panel-tab${activeTab === tab ? " is-active" : ""}`}
             aria-selected={activeTab === tab}
             aria-controls={`a11y-tabpanel-${tab.toLowerCase()}`}
             onClick={() => setActiveTab(tab)}
           >
             {tab}
-          </TabButton>
+          </button>
         ))}
-      </TabBar>
+      </div>
 
-      <TabPanel
+      <div
         id={`a11y-tabpanel-${activeTab.toLowerCase()}`}
         role="tabpanel"
         aria-labelledby={`a11y-tab-${activeTab.toLowerCase()}`}
+        className="a11y-panel-tabpanel"
       >
         {activeTab === "Typography" && (
           <>
             <SectionTitle>Type & emphasis</SectionTitle>
-            <InlineSection>
+            <div className="a11y-panel-inline-section">
               <FontSize />
               <LineHeight />
               <LetterSpacing />
-            </InlineSection>
-            <InlineSection>
+            </div>
+            <div className="a11y-panel-inline-section">
               <TextCase />
               <FontButtons />
-            </InlineSection>
+            </div>
           </>
         )}
 
         {activeTab === "Colors" && (
           <>
             <SectionTitle>Text & headings</SectionTitle>
-            <InlineSection>
+            <div className="a11y-panel-inline-section">
               <FontColor />
               <TitleColor />
               <TitleBackgroundColor />
-            </InlineSection>
+            </div>
           </>
         )}
 
         {activeTab === "Display" && (
           <>
             <SectionTitle>Focus & visibility</SectionTitle>
-            <InlineSection>
+            <div className="a11y-panel-inline-section">
               <HighlightTitles />
               <HighlightLinks />
               <HideImages />
               <Monochrome />
               <HighContrast />
               <LowContrast />
-            </InlineSection>
+            </div>
           </>
         )}
-      </TabPanel>
-    </Container>
+      </div>
+    </div>
   );
 }
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-`;
-
-const TabBar = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const TabButton = styled.button<{ $active: boolean }>`
-  border: none;
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: ${({ $active, theme }) => ($active ? theme.primary : "#eef2f7")};
-  color: ${({ $active, theme }) =>
-    $active ? theme.iconColor || "#ffffff" : theme.text};
-  cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-  }
-`;
-
-const TabPanel = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-`;
-
-const InlineSection = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-`;

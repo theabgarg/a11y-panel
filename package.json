@@ -37,13 +37,9 @@
   ],
   "peerDependencies": {
     "react": ">=16.8 <20",
-    "react-dom": ">=16.8 <20",
-    "styled-components": ">=5.0.0"
+    "react-dom": ">=16.8 <20"
   },
-  "dependencies": {
-    "react-dropdown": "^1.9.2",
-    "react-switch": "^6.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

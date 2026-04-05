@@ -1,6 +1,7 @@
 import { GlobalState } from "../Context/initialState";
 
-const widgetExclusion = ":not(.a11y-widget):not(.a11y-widget *)";
+const widgetRoot = "[data-a11y-panel-root]";
+const widgetExclusion = `:not(${widgetRoot}):not(${widgetRoot} *)`;
 const textSelectors = `body${widgetExclusion}, body *${widgetExclusion}`;
 const headingSelectors = ["h1", "h2", "h3", "h4", "h5", "h6"]
   .map((selector) => `${selector}${widgetExclusion}`)

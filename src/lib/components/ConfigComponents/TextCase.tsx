@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { store } from "../Context/Store";
-import styled from "styled-components";
 import SettingsBox from "./SettingsBox";
 
 type TextCaseValue = "uppercase" | "lowercase" | "capitalize" | "initial";
@@ -16,40 +15,21 @@ export default function TextCase() {
   const { globalState, dispatch } = useContext(store);
 
   return (
-    <SettingsBox title={"Text Case"}>
-      <ChipGroup>
+    <SettingsBox title="Text Case">
+      <div className="a11y-panel-chip-group">
         {options.map((option) => (
-          <Chip
+          <button
             key={option.value}
             type="button"
-            $active={globalState.textCase === option.value}
+            className={`a11y-panel-chip${globalState.textCase === option.value ? " is-active" : ""}`}
             onClick={() =>
               dispatch({ type: "SET_TEXT_CASE", data: option.value })
             }
           >
             {option.label}
-          </Chip>
+          </button>
         ))}
-      </ChipGroup>
+      </div>
     </SettingsBox>
   );
 }
-
-const ChipGroup = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const Chip = styled.button<{ $active: boolean }>`
-  border: 1px solid
-    ${({ $active, theme }) => ($active ? theme.primary : "#d7dee7")};
-  border-radius: 999px;
-  padding: 6px 10px;
-  background: ${({ $active, theme }) => ($active ? theme.primary : "#ffffff")};
-  color: ${({ $active, theme }) =>
-    $active ? theme.iconColor || "#ffffff" : theme.text};
-  font-size: 0.76rem;
-  font-weight: 600;
-  cursor: pointer;
-`;

@@ -1,27 +1,29 @@
 import React from "react";
-import Switch, { ReactSwitchProps } from "react-switch";
-import { useTheme } from "styled-components";
 
-interface ToggleProps extends ReactSwitchProps {}
+interface ToggleProps {
+  checked: boolean;
+  onChange: () => void;
+  disabled?: boolean;
+  ariaLabel?: string;
+}
 
-export default function Toggle({ onChange, checked, ...rest }: ToggleProps) {
-  const theme = useTheme();
-
+export default function Toggle({
+  onChange,
+  checked,
+  disabled = false,
+  ariaLabel,
+}: ToggleProps) {
   return (
-    <Switch
-      onChange={onChange}
-      checked={checked}
-      height={22}
-      width={42}
-      handleDiameter={18}
-      checkedIcon={false}
-      uncheckedIcon={false}
-      onColor={theme.primary}
-      offColor="#cbd5e1"
-      onHandleColor="#ffffff"
-      offHandleColor="#ffffff"
-      activeBoxShadow="0 0 0 3px rgba(14, 94, 177, 0.18)"
-      {...rest}
-    />
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={ariaLabel}
+      disabled={disabled}
+      className={`a11y-panel-toggle${checked ? " is-on" : ""}`}
+      onClick={onChange}
+    >
+      <span className="a11y-panel-toggle__thumb" />
+    </button>
   );
 }
