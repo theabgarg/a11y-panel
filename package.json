@@ -1,6 +1,6 @@
 {
   "name": "a11y-panel",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "An modern draggable React Accessibility Widget that allows users to change sites visual changes",
   "author": "abhishek garg",
   "private": false,
